@@ -1,4 +1,62 @@
-canvas {
-    background: url('/images/hand.svg') no-repeat center;
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;900&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
+html,
+body {
+  margin: 0px;
+  font-family: Roboto;
+  font-style: normal;
+  color: #353d54;
+}
+
+.container {
+  max-width: 1350px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.header {
+  background: #f0f1f4;
+  min-height: 136px;
+  padding: 30px 0;
+  h1 {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 36px;
+    margin: 0;
+  }
+}
+
+.footer {
+  background: rgba(53, 61, 84, 0.85);
+  color: #ffffff;
+  padding: 50px 0;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 22px;
+  .container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    .socials {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      .socials__icons {
+        display: flex;
+        gap: 5px;
+        img:hover {
+          opacity: 0.6;
+        }
+      }
+    }
+  }
+}

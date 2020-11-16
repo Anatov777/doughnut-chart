@@ -1,0 +1,38 @@
+@media (max-width: 1343px) {
+  .doughnut-chart {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 639px) {
+  .doughnut-chart {
+    justify-content: center;
+  }
+  .doughnut-chart canvas {
+    width: 290px !important;
+    height: 290px !important;
+    background-size: 80px 80px;
+  }
+  .doughnut-chart .legend {
+    padding-left: 0;
+  }
+  .doughnut-chart .legend::before,
+  .doughnut-chart .legend::after {
+    display: none;
+  }
+  .doughnut-chart .legend ul li::before {
+    display: none;
+  }
+  .info .info__item .info__num {
+    font-size: 40px;
+  }
+  .info .info__item .info__title {
+    font-size: 16px;
+  }
+  .info {
+      gap: 30px;
+  }
+  .doughnut-chart .legend ul li {
+      font-size: 18px;
+  }
+}
