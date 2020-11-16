@@ -15,8 +15,8 @@
         <div class="socials">
           <div class="socials__text">Подписывайся в соц сетях</div>
           <div class="socials__icons">
-            <a href="#"><img src="/images/inst.svg" alt="Instagram" /></a>
-            <a href="#"><img src="/images/vk.svg" alt="VK" /></a>
+            <a href="#"><img src="images/inst.svg" alt="Instagram" /></a>
+            <a href="#"><img src="images/vk.svg" alt="VK" /></a>
           </div>
         </div>
       </div>
