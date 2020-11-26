@@ -43,6 +43,7 @@ export default {
   data: () => ({
     serverData: require("@/test.json"),
     empNumsTitle: ["Сотрудников в штате", "Мужчины", "Женщин", "Пар"],
+    chartHiddenIndexes: {},
   }),
   mounted() {
     let self = this;
@@ -74,18 +75,20 @@ export default {
           borderWidth: 0,
         },
       },
+      tooltips: {
+        bodyFontSize: 30,
+      },
       plugins: {
         datalabels: {
           display: "auto",
           color: "#fff",
           font: function (context) {
-            console.log(context);
             var width = context.chart.width;
             var size = Math.round(width / 20);
             return {
               size: size,
               family: "Roboto",
-              weight: 500
+              weight: 500,
             };
           },
           formatter: function (value, context) {
@@ -98,7 +101,8 @@ export default {
         },
       },
     };
-
+    // this.chartData = this.serverData.data.departments.map((emp) => emp.employees)
+    // console.log(this.chartData);
     this.renderChart(data, options);
 
     let legendContainer = document.getElementById("legend");
@@ -118,23 +122,33 @@ export default {
       }
       var parent = target.parentElement;
       var chart = this.$data._chart;
-      var index = Array.prototype.slice.call(parent.children).indexOf(target);
+      // console.log([...parent.children].indexOf(target));
+      let index = Array.prototype.slice.call(parent.children).indexOf(target);
       var meta = chart.getDatasetMeta(0);
       var item = meta.data[index];
-
       if (item.hidden === null || item.hidden === false) {
         item.hidden = true;
         target.classList.add("hidden");
+        this.chartHiddenIndexes[index] = index;
       } else {
         target.classList.remove("hidden");
         item.hidden = null;
+        delete this.chartHiddenIndexes[index];
       }
       chart.update();
     },
     total(chart) {
       let data = chart.chart.data.datasets[0].data;
+      let hiddenIndexes = this.chartHiddenIndexes;
+      var filteredData = data.filter(function (elem) {
+        if (data.indexOf(elem) in hiddenIndexes) {
+          return "";
+        } else {
+          return elem;
+        }
+      });
       const reducer = (accumulator, currentValue) => accumulator + currentValue;
-      var total = data.reduce(reducer);
+      var total = filteredData.reduce(reducer);
       return total;
     },
   },
