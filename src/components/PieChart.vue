@@ -4,19 +4,19 @@
       <div class="info">
         <div class="info__item">
           <div class="info__num">{{ serverData.data.total }}</div>
-          <div class="info__title">{{ empNumsTitle[0] }}</div>
+          <div class="info__title">{{ addEnding(serverData.data.total, empWords[0]) }} в штате</div>
         </div>
         <div class="info__item">
           <div class="info__num">{{ serverData.data.males }}</div>
-          <div class="info__title">{{ empNumsTitle[1] }}</div>
+          <div class="info__title">{{ addEnding(serverData.data.males, empWords[1]) }}</div>
         </div>
         <div class="info__item">
           <div class="info__num">{{ serverData.data.females }}</div>
-          <div class="info__title">{{ empNumsTitle[2] }}</div>
+          <div class="info__title">{{ addEnding(serverData.data.females, empWords[2]) }}</div>
         </div>
         <div class="info__item">
           <div class="info__num">{{ serverData.data.couples }}</div>
-          <div class="info__title">{{ empNumsTitle[3] }}</div>
+          <div class="info__title">{{ addEnding(serverData.data.couples, empWords[3]) }}</div>
         </div>
       </div>
       <h2>По департаментам</h2>
@@ -42,8 +42,8 @@ export default {
   extends: Doughnut,
   data: () => ({
     serverData: require("@/test.json"),
-    empNumsTitle: ["Сотрудников в штате", "Мужчины", "Женщин", "Пар"],
     chartHiddenIndexes: {},
+    empWords: ["Сотрудник", "Мужчин", "Женщин", "Пар"],
   }),
   mounted() {
     let self = this;
@@ -101,10 +101,7 @@ export default {
         },
       },
     };
-    // this.chartData = this.serverData.data.departments.map((emp) => emp.employees)
-    // console.log(this.chartData);
     this.renderChart(data, options);
-
     let legendContainer = document.getElementById("legend");
     legendContainer.innerHTML = this.generateLegend();
     var legendItems = legendContainer.getElementsByTagName("li");
@@ -150,6 +147,26 @@ export default {
       const reducer = (accumulator, currentValue) => accumulator + currentValue;
       var total = filteredData.reduce(reducer);
       return total;
+    },
+    addEnding(num, word) {
+      let lastNum = num % 10;
+      if (word === "Сотрудник") {
+        if (lastNum === 1 && num % 100 != 11) {
+          return word;
+        } else if (lastNum >= 2 && lastNum <= 4) {
+          return word + "а";
+        } else {
+          return word + "ов";
+        }
+      } else {
+        if (lastNum === 1 && num % 100 != 11) {
+          return word + "а";
+        } else if (lastNum >= 2 && lastNum <= 4) {
+          return word + "ы";
+        } else {
+          return word;
+        }
+      }
     },
   },
 };
