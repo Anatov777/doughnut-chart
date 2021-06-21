@@ -2,21 +2,9 @@
   <div class="chart-area">
     <div class="container">
       <div class="info">
-        <div class="info__item">
-          <div class="info__num">{{ serverData.data.total }}</div>
-          <div class="info__title">{{ addEnding(serverData.data.total, empWords[0]) }} в штате</div>
-        </div>
-        <div class="info__item">
-          <div class="info__num">{{ serverData.data.males }}</div>
-          <div class="info__title">{{ addEnding(serverData.data.males, empWords[1]) }}</div>
-        </div>
-        <div class="info__item">
-          <div class="info__num">{{ serverData.data.females }}</div>
-          <div class="info__title">{{ addEnding(serverData.data.females, empWords[2]) }}</div>
-        </div>
-        <div class="info__item">
-          <div class="info__num">{{ serverData.data.couples }}</div>
-          <div class="info__title">{{ addEnding(serverData.data.couples, empWords[3]) }}</div>
+        <div class="info__item" v-for="(item, index) in infoItems" :key="'chart-info-' + index">
+          <div class="info__num">{{ item[0] }}</div>
+          <div class="info__title">{{ item[1] }}</div>
         </div>
       </div>
       <h2>По департаментам</h2>
@@ -37,13 +25,19 @@
 import { Doughnut } from "vue-chartjs";
 import "chartjs-plugin-datalabels";
 
+const empWords = [
+  ['Сотрудник', 'Сотрудника', 'Сотрудников'],
+  ['Мужчина', 'Мужчины', 'Мужчин'],
+  ['Женщина', 'Женщины', 'Женщин'],
+  ['Пара', 'Пары', 'Пар']
+]
+
 export default {
   name: "PieChart",
   extends: Doughnut,
   data: () => ({
     serverData: require("@/test.json"),
     chartHiddenIndexes: {},
-    empWords: ["Сотрудник", "Мужчин", "Женщин", "Пар"],
   }),
   mounted() {
     let self = this;
@@ -83,8 +77,8 @@ export default {
           display: "auto",
           color: "#fff",
           font: function (context) {
-            var width = context.chart.width;
-            var size = Math.round(width / 20);
+            let width = context.chart.width;
+            let size = Math.round(width / 20);
             return {
               size: size,
               family: "Roboto",
@@ -104,25 +98,35 @@ export default {
     this.renderChart(data, options);
     let legendContainer = document.getElementById("legend");
     legendContainer.innerHTML = this.generateLegend();
-    var legendItems = legendContainer.getElementsByTagName("li");
-    for (var i = 0; i < legendItems.length; i += 1) {
+    let legendItems = legendContainer.getElementsByTagName("li");
+    for (let i = 0; i < legendItems.length; i += 1) {
       legendItems[i].addEventListener("click", this.legendClickCallback, false);
     }
+  },
+  computed: {
+    infoItems() {
+      const info = [
+        [this.serverData.data.total, this.getDeclension(this.serverData.data.total, empWords[0]) + ' в штате'],
+        [this.serverData.data.males, this.getDeclension(this.serverData.data.males, empWords[1])],
+        [this.serverData.data.females, this.getDeclension(this.serverData.data.females, empWords[2])],
+        [this.serverData.data.couples, this.getDeclension(this.serverData.data.couples, empWords[3])]
+      ]
+      return info
+    },
   },
   methods: {
     legendClickCallback(event) {
       event = event || window.event;
 
-      var target = event.target || event.srcElement;
+      let target = event.target || event.srcElement;
       while (target.nodeName !== "LI") {
         target = target.parentElement;
       }
-      var parent = target.parentElement;
-      var chart = this.$data._chart;
-      // console.log([...parent.children].indexOf(target));
+      let parent = target.parentElement;
+      let chart = this.$data._chart;
       let index = Array.prototype.slice.call(parent.children).indexOf(target);
-      var meta = chart.getDatasetMeta(0);
-      var item = meta.data[index];
+      let meta = chart.getDatasetMeta(0);
+      let item = meta.data[index];
       if (item.hidden === null || item.hidden === false) {
         item.hidden = true;
         target.classList.add("hidden");
@@ -137,7 +141,7 @@ export default {
     total(chart) {
       let data = chart.chart.data.datasets[0].data;
       let hiddenIndexes = this.chartHiddenIndexes;
-      var filteredData = data.filter(function (elem) {
+      let filteredData = data.filter(function (elem) {
         if (data.indexOf(elem) in hiddenIndexes) {
           return "";
         } else {
@@ -145,33 +149,13 @@ export default {
         }
       });
       const reducer = (accumulator, currentValue) => accumulator + currentValue;
-      var total = filteredData.reduce(reducer);
+      let total = filteredData.reduce(reducer);
       return total;
     },
-    addEnding(num, word) {
-      let lastNum = num % 10;
-      if (word === "Сотрудник") {
-        if (lastNum === 1 && num % 100 != 11) {
-          return word;
-        } else if (lastNum >= 2 && lastNum <= 4) {
-          return word + "а";
-        } else {
-          return word + "ов";
-        }
-      } else {
-        if (lastNum === 1 && num % 100 != 11) {
-          return word + "а";
-        } else if (lastNum >= 2 && lastNum <= 4) {
-          return word + "ы";
-        } else {
-          return word;
-        }
-      }
-    },
-  },
-};
+    getDeclension(number, txt) {
+      let cases = [2, 0, 1, 1, 1, 2]
+      return txt[number % 100 > 4 && number % 100 < 20 ? 2 : cases[number % 10 < 5 ? number % 10 : 5]]
+    }
+  }
+}
 </script>
-
-<style lang="scss">
-@import "../assets/chart.scss";
-</style>

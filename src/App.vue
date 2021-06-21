@@ -26,6 +26,7 @@
 
 <script>
 import PieChart from "./components/PieChart.vue";
+import '@/assets/chart.scss'
 
 export default {
   name: "App",
